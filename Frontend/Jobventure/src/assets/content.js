@@ -1,0 +1,1 @@
+export const LOGO_URL="https://images-platform.99static.com//R0JPWWmRbrfqFnrTzyI0xa0G8Sc=/716x711:1350x1345/fit-in/500x500/99designs-contests-attachments/135/135264/attachment_135264083"

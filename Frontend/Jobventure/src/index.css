@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@theme {
+    --font-first: "Exo 2", sans-serif;
+}
+@layer base {
+    body {
+      @apply bg-gradient-to-b from-slate-900 to-violet-900 bg-blend-darken bg-fixed;
+    }
+  }

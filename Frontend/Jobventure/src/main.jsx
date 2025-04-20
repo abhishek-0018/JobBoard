@@ -11,6 +11,7 @@ import SignUp from './SignUp.jsx';
 import User from './User.jsx';
 import Footer from "./Footer";
 import JobDetails from './JobDetails.jsx';
+import Profile from './Profile.jsx';
 
 const AppLayout = () => {
   return (
@@ -55,6 +56,14 @@ const appRouter = createBrowserRouter([
           <>
           <User/>
           <Footer/>
+          </>
+        ),
+      },
+      {
+        path: "/Profile",
+        element: (
+          <>
+          <Profile/>
           </>
         ),
       },

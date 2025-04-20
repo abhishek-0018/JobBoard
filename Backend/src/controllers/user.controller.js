@@ -2,6 +2,7 @@ import {asyncHandler} from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import {User} from "../models/user.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import  jwt  from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens= async(userId)=>{
@@ -105,4 +106,50 @@ const loginUser =asyncHandler(async(req,res)=>{
 
 })
 
-export {registerUser,loginUser}
+const changeCoverImage=asyncHandler(async(req,res)=>{
+    const coverImageLocalPath= req.files?.coverImage[0]?.path;
+    if(!coverImageLocalPath){
+        throw new ApiError(404,"Cover Image required");
+    }
+    const coverImage=await uploadOnCloudinary(coverImageLocalPath);
+    if(!coverImage){
+        throw new ApiError(404,"Something went wrong while uploading file");
+    }
+    const user= await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                coverImage:coverImage?.url
+            }
+        },
+        {new:true}
+    ).select("-password -refreshToken")
+    return res.status(200).json(new ApiResponse(200, user, "Cover Image updated successfully"));
+})
+
+const changeAvatar=asyncHandler(async(req,res)=>{
+    const avatarLocalPath= req.files?.avatar[0]?.path;
+    if(!avatarLocalPath){
+        throw new ApiError(404,"Avatar Image required");
+    }
+    const avatar=await uploadOnCloudinary(avatarLocalPath);
+    if(!avatar){
+        throw new ApiError(404,"Something went wrong while uploading file");
+    }
+    const user= await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                avatar:avatar?.url
+            }
+        },
+        {new:true}
+    ).select("-password -refreshToken")
+    return res.status(200).json(new ApiResponse(200, user, "Avatar Image updated successfully"));
+})
+
+const getCurrentUser = asyncHandler(async(req,res)=>{
+    return res.status(200)
+    .json(200,req.user,"Current user fetched successfully");
+})
+export {registerUser,loginUser,changeCoverImage,changeAvatar,getCurrentUser}

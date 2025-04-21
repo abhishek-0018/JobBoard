@@ -2,9 +2,11 @@ import { Motion } from "./Motion";
 import { useState,useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 const Jobs = lazy(() => import("./Jobs"));
+import axios from "axios";
 
 const User = () => {
     const [user, setUser] = useState(null);
+    const [jobs,setJobs]=useState([])
     const navigate = useNavigate();
 
     const Logout=()=>{
@@ -16,6 +18,30 @@ const User = () => {
     const Profile=()=>{
         navigate("/Profile");
     }
+
+    const PostJob=()=>{
+        navigate("/Postjob");
+    }
+
+    useEffect(() => {
+        if (!user||user.status==="jobseeker") return;
+        const fetchJobs = async () => {
+            try {
+                const accessToken = localStorage.getItem("accessToken");
+                const response = await axios.get(`http://localhost:8000/api/v1/jobs/getpostedjobs`, {
+                    params: { user: user._id },
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                localStorage.setItem("postedJobs",response);
+                setJobs(response.data.data);
+
+            } catch (error) {
+                console.error("Error fetching posted jobs:", error.response?.data?.message || error.message);
+            }
+        };
+
+        fetchJobs();
+    }, [user]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("userData");
@@ -54,7 +80,7 @@ const User = () => {
                 <div className="mt-5">
                     <button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={Profile}>Profile</button>
                     {user.status==="jobseeker"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Applied Jobs</button>}
-                    {user.status==="employer"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Post a Job</button>}
+                    {user.status==="employer"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={PostJob}>Post a Job</button>}
                     <button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={Logout}>Logout</button>
                 </div>
             </div>
@@ -65,9 +91,24 @@ const User = () => {
                         className="h-[600px] w-[1100px] mt-[40px]"
                         alt="Job Search"
                     />
+                    {user.status==="jobseeker"&&
                     <Suspense>
-                        <Jobs/>
-                    </Suspense>
+                    <Jobs/>
+                </Suspense>
+                    }
+                    {user.status==="employer"&&
+                    <div>
+                    <   div className="flex items-center mt-[100px]">
+                            <h1 className="text-5xl ml-[120px] mr-[50px]">Posted jobs</h1>
+                        </div>
+    
+                        <div className="flex flex-wrap ml-[100px]">
+                            {jobs.length > 0 ? (
+                                jobs.map((job) => (
+                                <Jobs key={job._id} resData={job} />
+                            ))) : (
+                            <p className="text-center">No Jobs posted yet.</p>
+                    )}</div></div>}
                 </div>
             </Motion>
         </div>

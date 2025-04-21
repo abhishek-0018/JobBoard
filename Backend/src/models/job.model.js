@@ -8,38 +8,37 @@ const jobSchema = new Schema(
     type: String, 
     required: true 
   },
-  requiredSkills: [
+  overview: 
   { 
     type: String, 
-  }
-],
-  postedBy: 
+    required: true 
+  },
+  requiredSkills: [
+    { 
+      type: String, 
+    }
+  ],
+  user: 
   { 
     type: Schema.Types.ObjectId, 
-    ref: "User" 
+    ref: "User",
   },
  jobType: 
   { 
     type: String, 
-    enum: ["remote", "hybrid","onSite"],
+    enum: ["remote", "hybrid","onsite"],
     required: true
   },
-  salary: 
+  salary: {
+    type: String,
+    required: true
+  },
+  place:
   { 
     type: String,
     required: true
   },
-  place: 
-  { 
-    type: String,
-    required: true
-  },
-  requirements:[
-    {
-        type:String,
-        required:true
-    }
-  ],
 }, { timestamps: true });
-jobSchema.plugin(mongooseAggregatePaginate)
+
+// jobSchema.plugin(mongooseAggregatePaginate)
 export const Job = mongoose.model("Job", jobSchema);

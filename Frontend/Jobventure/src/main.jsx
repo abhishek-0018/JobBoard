@@ -1,9 +1,5 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import './index.css'
-import App from './App.jsx'
-import Header from './Header.jsx';
 import ReactDOM from "react-dom/client";
 import LandingPage from './LandingPage.jsx';
 import Login from './Login.jsx';
@@ -12,6 +8,7 @@ import User from './User.jsx';
 import Footer from "./Footer";
 import JobDetails from './JobDetails.jsx';
 import Profile from './Profile.jsx';
+import Postjob from './Postjob.jsx';
 
 const AppLayout = () => {
   return (
@@ -72,6 +69,14 @@ const appRouter = createBrowserRouter([
         element: (
           <>
           <JobDetails/>
+          </>
+        ),
+      },
+      {
+        path: "/Postjob",
+        element: (
+          <>
+          <Postjob/>
           </>
         ),
       },

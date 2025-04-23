@@ -18,6 +18,10 @@ const jobSchema = new Schema(
       type: String, 
     }
   ],
+  lastDate: {
+    type: Date,
+    required: true,
+  },
   user: 
   { 
     type: Schema.Types.ObjectId, 

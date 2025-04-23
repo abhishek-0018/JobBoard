@@ -5,7 +5,7 @@ import { Job } from "../models/job.model.js";
 
 
 const postJob=asyncHandler(async(req,res)=>{
-    const {title,overview,place,requiredSkills,jobType,user,salary}=req.body;
+    const {title,overview,place,requiredSkills,jobType,user,lastDate,salary}=req.body;
     if(!title){
         throw new ApiError(401,"Title required");
     }
@@ -21,6 +21,9 @@ const postJob=asyncHandler(async(req,res)=>{
     if(!jobType){
         throw new ApiError(401,"JobType required");
     }
+    if(!lastDate){
+        throw new ApiError(401,"Last date is required");
+    }
     if(requiredSkills.length===0){
         throw new ApiError(401,"Required skill required");
     }
@@ -29,8 +32,9 @@ const postJob=asyncHandler(async(req,res)=>{
        overview,
        place,
        jobType,
-       user:user,
+       user:req.user._id,
        salary,
+       lastDate,
        requiredSkills
     })
 
@@ -44,11 +48,18 @@ const postJob=asyncHandler(async(req,res)=>{
 })
 
 const getPostedJobs=asyncHandler(async(req,res)=>{
-    const user=req.user;
+    const user=req.user._id;
     const jobs= await Job.find({user:user});
     return res.status(200).json(
         new ApiResponse(200, jobs, "Jobs fetched Successfully")
     )
 })
 
-export {postJob, getPostedJobs}
+const getAllJobs=asyncHandler(async(req,res)=>{
+    const jobs=await Job.find();
+    return res.status(200).json(
+        new ApiResponse(200, jobs, "All jobs fetched Successfully")
+    )
+})
+
+export {postJob, getPostedJobs,getAllJobs}

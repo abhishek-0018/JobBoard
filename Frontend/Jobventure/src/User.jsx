@@ -24,12 +24,12 @@ const User = () => {
     }
 
     useEffect(() => {
-        if (!user||user.status==="jobseeker") return;
+        if (!user) return;
         const fetchJobs = async () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
-                const response = await axios.get(`http://localhost:8000/api/v1/jobs/getpostedjobs`, {
-                    params: { user: user._id },
+                const endPoint=user.status==="jobseeker"?"/getalljobs":"/getpostedjobs"
+                const response = await axios.get(`http://localhost:8000/api/v1/jobs${endPoint}`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                 });
                 localStorage.setItem("postedJobs",response);
@@ -61,9 +61,6 @@ const User = () => {
     if (!user) {
         return <p className="text-center mt-20">Redirecting to login...</p>;
     }
-    else{
-        console.log(user.avatar);
-    }
 
     return (
         <div className="flex ">
@@ -77,7 +74,7 @@ const User = () => {
                 <div className="flex justify-center mt-7">
                     <h1 className="text-amber-50 text-xl capitalize">{user.name}</h1>
                 </div>
-                <div className="mt-5">
+                <div className="mt-5 mr-1">
                     <button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={Profile}>Profile</button>
                     {user.status==="jobseeker"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Applied Jobs</button>}
                     {user.status==="employer"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={PostJob}>Post a Job</button>}
@@ -86,20 +83,27 @@ const User = () => {
             </div>
             <Motion>
                 <div className="mt-[60px] ml-[80px]">
-                   <h1>Find work that works for you!</h1>
-                    <img src="https://assets.entrepreneur.com/content/3x2/2000/20151120172744-procrastination-young-man-home-office-laptop-distracted-work-distant.jpeg"
+                    {user.status==="jobseeker"&&
+                   <h1>Find work that works for you!</h1>}
+                   {user.status==="jobseeker"
+                   &&
+                   <img src="https://assets.entrepreneur.com/content/3x2/2000/20151120172744-procrastination-young-man-home-office-laptop-distracted-work-distant.jpeg"
                         className="h-[600px] w-[1100px] mt-[40px]"
                         alt="Job Search"
-                    />
-                    {user.status==="jobseeker"&&
-                    <Suspense>
-                    <Jobs/>
-                </Suspense>
-                    }
-                    {user.status==="employer"&&
+                    />}
+                   {user.status==="employer"&&
+                   <h1>Find your next star team member today.</h1>}
+               {user.status==="employer"&&
+                  <img src="https://www.jll.ie/images/global/treant-and-insights/jll-5-incentives-to-entice-employees-social-1200x628.jpg"
+                   className="h-[600px] w-[1100px] mt-[40px]"
+                   alt="Job Search"
+               />}
                     <div>
                     <   div className="flex items-center mt-[100px]">
-                            <h1 className="text-5xl ml-[120px] mr-[50px]">Posted jobs</h1>
+                        {user.status==="employer"&&
+                            <h1 className="text-5xl ml-[120px] mr-[50px]">Posted jobs</h1>}
+                            {user.status==="jobseeker"&&
+                            <h1 className="text-5xl ml-[120px] mr-[50px]">Jobs</h1>}
                         </div>
     
                         <div className="flex flex-wrap ml-[100px]">
@@ -108,7 +112,7 @@ const User = () => {
                                 <Jobs key={job._id} resData={job} />
                             ))) : (
                             <p className="text-center">No Jobs posted yet.</p>
-                    )}</div></div>}
+                    )}</div></div>
                 </div>
             </Motion>
         </div>

@@ -11,6 +11,7 @@ const Postjob = () => {
   const [overview, setOverview] = useState("");
   const [requirements, setRequirements] = useState([]);
   const [input, setInput] = useState("");
+  const [lastDateToApply, setLastDateToApply] = useState("");
   const navigate = useNavigate();
 
   const addRequirement = (e) => {
@@ -29,7 +30,6 @@ const Postjob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const payload = {
       title,
       place,
@@ -37,6 +37,7 @@ const Postjob = () => {
       jobType: type,
       overview,
       requiredSkills: requirements,
+      lastDate: new Date(lastDateToApply)
     };
 
     const access = localStorage.getItem("accessToken");
@@ -74,7 +75,7 @@ const Postjob = () => {
               { label: "Overview", value: overview, setter: setOverview },
               { label: "Type (remote, hybrid, onsite)", value: type, setter: setType },
               { label: "Place", value: place, setter: setPlace },
-              { label: "Salary", value: salary, setter: setSalary }
+              { label: "Salary", value: salary, setter: setSalary },
             ].map((field, idx) => (
               <input
                 key={idx}
@@ -86,6 +87,19 @@ const Postjob = () => {
                 autoComplete="off"
               />
             ))}
+            <label className="text-white font-medium w-full">
+  Last Date to Apply:
+  <div className="relative mt-2">
+    <input
+      type="date"
+      value={lastDateToApply}
+      onChange={(e) => setLastDateToApply(e.target.value)}
+      className="p-4 bg-violet-900 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+      min={new Date().toISOString().split("T")[0]}
+    />
+  </div>
+</label>
+
 
             <div>
               <input

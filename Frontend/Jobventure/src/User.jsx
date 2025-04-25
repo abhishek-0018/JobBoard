@@ -12,6 +12,8 @@ const User = () => {
     const Logout=()=>{
         localStorage.removeItem("userData");
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("job");
+        localStorage.removeItem("postedJobs")
         navigate("/");
     }
 
@@ -84,7 +86,7 @@ const User = () => {
             <Motion>
                 <div className="mt-[60px] ml-[80px]">
                     {user.status==="jobseeker"&&
-                   <h1>Find work that works for you!</h1>}
+                   <h1 className="text-5xl">Find work that works for you!</h1>}
                    {user.status==="jobseeker"
                    &&
                    <img src="https://assets.entrepreneur.com/content/3x2/2000/20151120172744-procrastination-young-man-home-office-laptop-distracted-work-distant.jpeg"

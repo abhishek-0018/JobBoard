@@ -6,7 +6,7 @@ export const Motion = ({children}) =>{
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     viewport={{ once: false, amount: 0.2 }}
-                    className="flex justify-center font-first text-5xl text-amber-50"
+                    className="flex justify-center font-first text-amber-50"
                     >
                         {children}
                     </motion.div>

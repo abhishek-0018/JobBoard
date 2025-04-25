@@ -9,10 +9,10 @@ const Jobs = ({ resData }) =>{
                 state={{ job: resData }}
                 className="hover:scale-105 transition-transform duration-300"
                 >
-                <div className="flex justify-between items-center bg-gradient-to-b from-slate-800 to-violet-800 gap-7 m-7 rounded-3xl p-2 w-[450px]">
+                <div className="flex justify-between items-center bg-gradient-to-b from-slate-800 to-violet-800 gap-7 m-7 rounded-3xl p-2 w-[450px] h-[150px]">
                     <div>
-                        <h1 className="font-bold py-4 text-lg capitalize">{resData.title}</h1>
-                        <hr className="bg-amber-50 w-[400px]"></hr>
+                        <h1 className="font-bold py-2 text-lg capitalize">{resData.title}</h1>
+                        <hr className="bg-amber-50 w-[400px] my-[10px]"></hr>
                         <div className="flex gap-4">
                             <h6 className="text-xl capitalize">{resData.place}</h6>
                             <h6 className="text-xl capitalize">{resData.jobType}</h6>

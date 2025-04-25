@@ -1,12 +1,20 @@
 import { Motion } from "./Motion";
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 const JobDetails=()=>{
     const { id } = useParams();
     const location = useLocation();
     const job = location.state?.job;
     const user=JSON.parse(localStorage.getItem("userData"));
+    const navigate = useNavigate();
 
     if (!job) return <p>Job details not found. Please navigate from the jobs list.</p>;
+
+    const handleApply= async(e)=>{
+        e.preventDefault();
+        localStorage.setItem("job",JSON.stringify(job));
+        navigate("/Applyjob")
+    }
+
     return (
         <div className="flex">
         <Motion>
@@ -14,36 +22,37 @@ const JobDetails=()=>{
             <div className="border-amber-50 text-4xl">
                 <img className="rounded-2xl w-[800px] h-[400px]" src="https://www.jll.ie/images/global/treant-and-insights/jll-5-incentives-to-entice-employees-social-1200x628.jpg"></img>
                 <div className="flex items-center gap-[180px]">
-                <div className="ml-[100px] mt-[60px]">
-                    <div className="flex justify-between">
+                <div className="mt-[90px]">
+                    <div className="flex justify-between mx-[100px]">
                     <div>
                     <h1 className="text-4xl font-bold mb-4">{job.title}</h1>
                     <h1 className="text-xl">ABC</h1>
                     </div>
                     <div>
                     {user.status==="jobseeker"&&<button
-                        type="submit"
                         className="bg-slate-900 h-[60px] text-white text-lg font-semibold py-4 px-10 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:bg-violet-900"
+                        onClick={handleApply}
                     >
                         Apply
                 </button>}
                     </div>
                     </div>
-                    <div className="flex gap-9 mb-[60px] mt-[30px]">
-                        <h1 className="text-xl capitalize">{job.place}</h1>
-                        <h1 className="text-xl capitalize">{job.jobType}</h1>
-                        <h1 className="text-xl">{job.salary}</h1>
-                        <h1 className="text-xl">{new Date(job.lastDate).toLocaleDateString("en-IN")}</h1>
+                    <div className="flex gap-9 my-[30px] ml-[100px]">
+                        <h1 className="text-xl capitalize">Location: {job.place}</h1>
+                        <h1 className="text-xl capitalize">Type: {job.jobType}</h1>
+                        <h1 className="text-xl">Salary: {job.salary}</h1>
+                        <h1 className="text-xl">Last date: {new Date(job.lastDate).toLocaleDateString("en-IN")}</h1>
                     </div>
                 </div>
                 </div>
-                <hr></hr>
-                <div className="m-[70px]">
+                <div className="mx-[70px]">
+                    <hr className="my-[100px]"></hr>
                     <h1 className="mb-[20px]">Descriptions</h1>
                     <h1 className="text-2xl mb-[20px]">Overview</h1>
                     <h1 className="text-[17px]">{job.overview}</h1>
+                    <hr className="my-[100px]"></hr>
                     <h1 className="text-2xl my-[20px]">Requirements</h1>
-                    <ul className="list-disc pl-6 text-[17px]">
+                    <ul className="list-disc pl-6 text-[17px] mb-[90px]">
                         {job.requiredSkills?.map((skill, index) => (
                             <li key={index}>{skill}</li>
                         ))}

@@ -16,10 +16,6 @@ app.use(express.urlencoded({extended:true,limit:"16kb"}))
 // app.use(express.static("public"))
 app.use(cookieParser())
 
-//   routes import
-import userRouter from './routes/user.routes.js'
-import jobRouter from './routes/job.routes.js'
-
 cron.schedule("0 0 * * *", async () => {
     console.log("Running job cleaner at", new Date());
     try {
@@ -29,9 +25,16 @@ cron.schedule("0 0 * * *", async () => {
       console.error("Error while cleaning expired jobs:", error);
     }
   });
+
+//   routes import
+import userRouter from './routes/user.routes.js'
+import jobRouter from './routes/job.routes.js'
+import applyRouter from './routes/apply.routes.js'
+
 //   routes declaration
 // to use routes it's needed to use ".use" instead of ".get"
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/jobs",jobRouter)
+app.use("/api/v1/apply",applyRouter)
 
 export {app}

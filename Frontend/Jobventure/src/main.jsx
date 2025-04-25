@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import JobDetails from './JobDetails.jsx';
 import Profile from './Profile.jsx';
 import Postjob from './Postjob.jsx';
+import Apply from './Apply.jsx';
 
 const AppLayout = () => {
   return (
@@ -77,6 +78,14 @@ const appRouter = createBrowserRouter([
         element: (
           <>
           <Postjob/>
+          </>
+        ),
+      },
+      {
+        path: "/Applyjob",
+        element: (
+          <>
+          <Apply/>
           </>
         ),
       },

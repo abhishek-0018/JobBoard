@@ -1,20 +1,59 @@
 import { Motion } from "./Motion";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 const JobDetails=()=>{
     const { id } = useParams();
     const location = useLocation();
-    const job = location.state?.job;
     const user=JSON.parse(localStorage.getItem("userData"));
+    const [jobdetail,setJobdetail]=useState(null)
+    const [applyStatus,setApplyStatus]=useState("");
+    const [status,setStatus]=useState("")
     const navigate = useNavigate();
 
-    if (!job) return <p>Job details not found. Please navigate from the jobs list.</p>;
+    // if (!job) return <p>Job details not found. Please navigate from the jobs list.</p>;
 
     const handleApply= async(e)=>{
         e.preventDefault();
-        localStorage.setItem("job",JSON.stringify(job));
+        if(applyStatus==="false"){
+            return;
+        }
         navigate("/Applyjob")
     }
+    
+    useEffect(()=>{
+        const job = location.state?.job;
+        localStorage.setItem("job",JSON.stringify(job));
+        setJobdetail(job);
+        const fetchApplicationStatus= async ()=>{
+            try {
+                const accessToken = localStorage.getItem("accessToken");
+                const endPoint="/applyStatus";
+                const response = await axios.get(`http://localhost:8000/api/v1/apply${endPoint}`, {
+                    params: { jobpost: job._id },
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                if(response.data.success){
+                    setApplyStatus("true");
+                    setStatus("Apply")
+                }
+                else{
+                    setApplyStatus("false");
+                    setStatus("Applied");
+                }
 
+            } catch (error) {
+                console.error("Error fetching posted jobs:", error.response?.data?.message || error.message);
+            }
+        };
+        if(user.status==="jobseeker"){
+            fetchApplicationStatus();
+        }
+    },[])
+
+    if(!jobdetail){
+        return <p>Job details not found. Please navigate from the jobs list.</p>;
+    }
     return (
         <div className="flex">
         <Motion>
@@ -25,7 +64,7 @@ const JobDetails=()=>{
                 <div className="mt-[90px]">
                     <div className="flex justify-between mx-[100px]">
                     <div>
-                    <h1 className="text-4xl font-bold mb-4">{job.title}</h1>
+                    <h1 className="text-4xl font-bold mb-4">{jobdetail.title}</h1>
                     <h1 className="text-xl">ABC</h1>
                     </div>
                     <div>
@@ -33,15 +72,15 @@ const JobDetails=()=>{
                         className="bg-slate-900 h-[60px] text-white text-lg font-semibold py-4 px-10 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:bg-violet-900"
                         onClick={handleApply}
                     >
-                        Apply
+                        {status}
                 </button>}
                     </div>
                     </div>
                     <div className="flex gap-9 my-[30px] ml-[100px]">
-                        <h1 className="text-xl capitalize">Location: {job.place}</h1>
-                        <h1 className="text-xl capitalize">Type: {job.jobType}</h1>
-                        <h1 className="text-xl">Salary: {job.salary}</h1>
-                        <h1 className="text-xl">Last date: {new Date(job.lastDate).toLocaleDateString("en-IN")}</h1>
+                        <h1 className="text-xl capitalize">Location: {jobdetail.place}</h1>
+                        <h1 className="text-xl capitalize">Type: {jobdetail.jobType}</h1>
+                        <h1 className="text-xl">Salary: {jobdetail.salary}</h1>
+                        <h1 className="text-xl">Last date: {new Date(jobdetail.lastDate).toLocaleDateString("en-IN")}</h1>
                     </div>
                 </div>
                 </div>
@@ -49,11 +88,11 @@ const JobDetails=()=>{
                     <hr className="my-[100px]"></hr>
                     <h1 className="mb-[20px]">Descriptions</h1>
                     <h1 className="text-2xl mb-[20px]">Overview</h1>
-                    <h1 className="text-[17px]">{job.overview}</h1>
+                    <h1 className="text-[17px]">{jobdetail.overview}</h1>
                     <hr className="my-[100px]"></hr>
                     <h1 className="text-2xl my-[20px]">Requirements</h1>
                     <ul className="list-disc pl-6 text-[17px] mb-[90px]">
-                        {job.requiredSkills?.map((skill, index) => (
+                        {jobdetail.requiredSkills?.map((skill, index) => (
                             <li key={index}>{skill}</li>
                         ))}
                     </ul>
@@ -65,14 +104,14 @@ const JobDetails=()=>{
                 <div className="mt-[200px] ml-[50px] mb-[100px]  text-4xl w-[500px] bg-slate-900 rounded-4xl h-fit">
                    <div className="my-[70px] mx-[20px]">
                     <h1>ABC</h1>
-                    <h4 className="text-xl mb-[60px] ">{job.place}</h4>
+                    <h4 className="text-xl mb-[60px] ">{jobdetail.place}</h4>
                     <h1 className="text-2xl mb-[20px]">Overview</h1>
-                    <h1  className="text-[17px]">{job.overview}</h1>
+                    <h1  className="text-[17px]">{jobdetail.overview}</h1>
                     <hr className="my-[30px]"></hr>
                     <h1  className="m-[30px] text-2xl">Founded in</h1>
                     <h1  className="m-[30px] text-xl text-violet-800">2025</h1>
                     <h1  className="m-[30px] text-2xl">Location</h1>
-                    <h1  className="m-[30px] text-xl text-violet-800">{job.place}</h1>
+                    <h1  className="m-[30px] text-xl text-violet-800">{jobdetail.place}</h1>
                     <h1  className="m-[30px] text-2xl">Phone</h1>
                     <h1  className="m-[30px] text-xl text-violet-800">9936730698</h1>
                     <h1  className="m-[30px] text-2xl">Email</h1>

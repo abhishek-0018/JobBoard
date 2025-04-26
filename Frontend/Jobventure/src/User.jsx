@@ -2,6 +2,7 @@ import { Motion } from "./Motion";
 import { useState,useEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 const Jobs = lazy(() => import("./Jobs"));
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const User = () => {
@@ -15,14 +16,6 @@ const User = () => {
         localStorage.removeItem("job");
         localStorage.removeItem("postedJobs")
         navigate("/");
-    }
-
-    const Profile=()=>{
-        navigate("/Profile");
-    }
-
-    const PostJob=()=>{
-        navigate("/Postjob");
     }
 
     useEffect(() => {
@@ -77,9 +70,8 @@ const User = () => {
                     <h1 className="text-amber-50 text-xl capitalize">{user.name}</h1>
                 </div>
                 <div className="mt-5 mr-1">
-                    <button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={Profile}>Profile</button>
-                    {user.status==="jobseeker"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Applied Jobs</button>}
-                    {user.status==="employer"&&<button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={PostJob}>Post a Job</button>}
+                    <Link to="/Profile"><button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Profile</button></Link>
+                    {user.status==="employer"&&<Link to="/Postjob"><button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900">Post a Job</button></Link>}
                     <button className="flex h-[50px] w-[240px] bg-violet-950 text-amber-50 justify-center items-center mb-2 ml-1 cursor-pointer hover:scale-105 hover:bg-violet-900" onClick={Logout}>Logout</button>
                 </div>
             </div>
@@ -94,7 +86,7 @@ const User = () => {
                         alt="Job Search"
                     />}
                    {user.status==="employer"&&
-                   <h1>Find your next star team member today.</h1>}
+                   <h1 className="text-5xl">Find your next star team member today.</h1>}
                {user.status==="employer"&&
                   <img src="https://www.jll.ie/images/global/treant-and-insights/jll-5-incentives-to-entice-employees-social-1200x628.jpg"
                    className="h-[600px] w-[1100px] mt-[40px]"
